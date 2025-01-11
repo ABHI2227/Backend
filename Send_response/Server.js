@@ -1,5 +1,5 @@
 import Express from 'express';
-
+import path from 'path';
 const app = Express();
 
 const port = 3000;
@@ -29,8 +29,18 @@ app.get('/', (req, res) => {
 
     // res.send('<h1>Abhishek Malve</h1>');
         
+const dir =path.resolve();
 
-    res.sendFile(__dirname + '/index.html');
+// console.log(dir);
+
+// res.sendFile('index.html')
+const url = path.join(dir,'index.html');
+res.sendFile(url);
+
+
+
+const name = 'RAM';//DYNAMIC NAME ,TEMPLATE ENGINE IS IMPORTANT TO SHOW THIS 
+
 
 })
 
