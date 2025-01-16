@@ -1,45 +1,51 @@
 import express from 'express';
-import path from 'path';
-import ejs from 'ejs';
 import mongoose from 'mongoose';
-import {User}  from './Models/User.js';
+import ejs from 'ejs';
+import User from './Models/User.js';
 
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+
 // Connect to MongoDB
 mongoose.connect('mongodb+srv://abhishekmalve27022:iELngosmU6CyAprw@cluster0.o7vrb.mongodb.net/', {
-    dbName: "NodeJs Mastery Course"
-}
-).then(() => {
+  dbName: 'NodeJs_Mastery_Course',
+})
+  .then(() => {
     console.log('Connected to MongoDB');
-}).catch((error) => {
+  })
+  .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
-}); 
+  });
 
+// Render the home page
+app.get('/', (req, res) => {
+  res.render('index');
+});
 
-app.get( '/', (req, res) => {
-    res.render('index.ejs');
-})
-
-app.post('/form-submit', (req, res) => {
-    console.log(req.body);
+// Handle form submission
+app.post('/form-submit', async (req, res) => {
+  try {
+    const user = await User.create(req.body);
     res.json({
-       message: 'your form has been submited'
+      message: 'Your form has been submitted successfully!',
+      newUser: user,
+      success: true,
+    });
+  } catch (error) {
+    console.error('Error while creating user:', error);
+    res.status(500).json({
+      message: 'An error occurred while submitting the form.',
+      success: false,
+    });
+  }
+});
 
-    })
-    try {
-        const user = await User.create(req.body);
-        console.log(user);
-    } catch (error) {
-        console.error(error);
-    }   
-})
-
-
+// Start the server
 const port = 3000;
-
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });
